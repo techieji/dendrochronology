@@ -1,19 +1,19 @@
-from PIL import Image, ImageEnhance
 import matplotlib.pyplot as plt
 import numpy as np
 from math import ceil
 import scipy.signal
 import itertools as it
+import cv2
 
 # https://stackoverflow.com/a/75114333/11555240
 def sliding_median(arr, window):
     return np.median(np.lib.stride_tricks.sliding_window_view(arr, (window,)), axis=1)
 
-with Image.open('IMG_2797.jpg') as im:
-    h = im.height
-    w = im.width
-    bwim = ImageEnhance.Color(im).enhance(0)
-    px = np.array(bwim)[:, :, 0]
+PATH = 'IMG_2797.jpg'
+im = cv2.imread(PATH)
+h, w, _ = im.shape
+bwim = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+px = bwim
 
 l = np.array([np.median(px[y, round(w*y/h):]) for y in range(h)])
 s1 = scipy.signal.savgol_filter(l, 50, 3)
